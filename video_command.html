@@ -239,7 +239,7 @@ $("#StartVideo").click(function(){
           type: "POST",
           contentType: "application/json",
           headers: {"Authorization":token},
-          url: root +"/comGpsGate/api/v.1/applications/60/users/" + userid + "/devices/" + deviceid + "/commands",
+          url: root +"/comGpsGate/api/v.1/applications/10/users/" + userid + "/devices/" + deviceid + "/commands",
         data : JSON.stringify({command:"StartStreaming"}), // data in json format
         async : false          
       });
@@ -252,7 +252,7 @@ $("#StopVideo").click(function(){
           type: "POST",
           contentType: "application/json",
           headers: {"Authorization":token},
-          url: root +"/comGpsGate/api/v.1/applications/60/users/" + userid + "/devices/" + deviceid + "/commands",
+          url: root +"/comGpsGate/api/v.1/applications/10/users/" + userid + "/devices/" + deviceid + "/commands",
         data : JSON.stringify({command:"StopStreaming"}), // data in json format
         async : false          
       });
