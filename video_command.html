@@ -238,7 +238,7 @@ $("#StartVideo").click(function(){
         $.ajax({
           type: "POST",
           contentType: "application/json",
-          headers: {"Authorization":token},
+          headers: {"Authorization":"B8jQVnrx%2bCq%2baUl6algfPloaEGk83P6VWfA13OaB43lvJovWD5OehDlUhNdgEl%2fI"},
           url:  "https://queclink.gpsgate.com/comGpsGate/api/v.1/applications/10/users/" + userid + "/devices/" + deviceid + "/commands",
         data : JSON.stringify({command:"StartStreaming"}), // data in json format
         async : false          
@@ -251,7 +251,7 @@ $("#StopVideo").click(function(){
         $.ajax({
           type: "POST",
           contentType: "application/json",
-          headers: {"Authorization":token},
+          headers: {"Authorization":"B8jQVnrx%2bCq%2baUl6algfPloaEGk83P6VWfA13OaB43lvJovWD5OehDlUhNdgEl%2fI"},
           url: "https://queclink.gpsgate.com/comGpsGate/api/v.1/applications/10/users/" + userid + "/devices/" + deviceid + "/commands",
         data : JSON.stringify({command:"StopStreaming"}), // data in json format
         async : false          
