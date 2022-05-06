@@ -1,0 +1,266 @@
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        
+        
+         <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://vjs.zencdn.net/6.2/video.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.12.2/videojs-contrib-hls.min.js"></script>
+      <script type="text/javascript" src="https://cdn.rawgit.com/videojs/videojs-youtube/master/src/Youtube.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/2.4.1/dash.all.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-dash/2.8.1/videojs-dash.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://vjs.zencdn.net/6.2/video-js.css">
+
+
+  <style id="compiled-css" type="text/css">
+        #instructions {
+    max-width: 640px;
+    text-align: left;
+    margin: 0px auto;
+  }
+  
+  #instructions textarea {
+    width: 100%;
+    height: 100px;
+  }
+  /* Show the controls (hidden at the start by default) */
+  
+  .video-js .vjs-control-bar {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  /* Make the demo a little prettier */
+  
+  body {
+    background: #222;
+    text-align: center;
+    color: #aaa;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: radial-gradient(#333, hsl(200, 30%, 6%));
+  }
+  
+  a,
+  a:hover,
+  a:visited {
+    color: #76DAFF;
+  }
+
+    /* EOS */
+  </style>
+
+        
+        <script>
+
+ jQuery(function($) {
+
+
+  $("#video_playback").submit(function(e) {
+    e.preventDefault();
+
+    var st = $("#starttime").val();
+    st = st.replace(":","").replace("T","").replace("-","").replace("-","");
+    var et = $("#endtime").val();
+    et = et.replace(":","").replace("T","").replace("-","").replace("-","");
+
+    var device = $("#deviceID").val();
+    var apikey = "zT908g2j9ngQW8ILJWnVvbgPojeHWCodnG3CEf6wayPjIlx9qVs4kA%3D%3D";
+    var link = "";
+      
+      
+   
+    
+      $.ajax({
+          type: "GET",
+          dataType: "json",
+          url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/record/video?key=" + apikey + "&terid=" + device + "&starttime=" + st + "&endtime=" + et + "&chl=1&st=1",
+          success: function(data) {
+              
+        
+
+             // Add the stream URL to player
+               vsgLoadVideo(data.data.url);
+      
+            }                 
+      });
+    
+
+    
+
+  });
+
+});
+
+  jQuery(document).ready(function($) {
+var getUrlParameter = function getUrlParameter(sParam) {
+    // Get custom URL from HTML parameter
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
+      
+
+      // Add the stream URL to player
+      $("#deviceID").val(getUrlParameter('device'));
+      
+
+}); // jQuery(function($) END
+
+
+/* VIDEOJS */
+// declare object for video
+var vgsPlayer, poster;
+
+vgsPlayer = videojs('vid1');
+            
+            
+            
+            
+function vsgLoadVideo(vidURL, poster) {
+
+  var type = getType(vidURL);
+
+  console.log(type);
+
+
+  vgsPlayer.src({
+    "src": vidURL,
+    "type": type
+  });
+
+  vgsPlayer.play();
+  
+  return false;
+
+}
+
+
+function ytVidId(url) {
+
+  var p = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+
+  if (url.match(p) || getId(url).length == 11)
+    return false;
+}
+
+/**/
+function getId(url) {
+  var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+  var match = url.match(regExp);
+
+  if (match && match[2].length == 11) {
+    return match[2];
+  } else {
+    return false;
+  }
+}
+
+var rtmp_suffix = /^rtmp:\/\//;
+var hls_suffix = /\.m3u8/;
+var mp4_suffix = /\.(mp4|m4p|m4v|mov)/i;
+var hds_suffix = /\.f4m/;
+var dash_suffix = /\.mpd/;
+var flv_suffix = /\.flv/;
+var webm_suffix = /\.webm/;
+/* AUDIO */
+//var mp3_suffix = /\.mp3/;
+var mpeg_suffix = /\.(mp3|m4a)/i;
+var ogg_suffix = /\.ogg/;
+
+
+var yt_suffix = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+var dm_suffix = /\.?dailymotion.com/;
+var vm_suffix = /\.?vimeo.com/;
+
+function getType(url) {
+
+  /* AUDIO */
+  if (mpeg_suffix.test(url))
+    return 'audio/mpeg';
+  if (ogg_suffix.test(url))
+    return 'audio/ogg';
+  if (dash_suffix.test(url))
+    return 'application/dash+xml';
+  if (rtmp_suffix.test(url))
+    return 'rtmp/mp4';
+  if (hls_suffix.test(url))
+    return 'application/x-mpegurl';
+  if (mp4_suffix.test(url))
+    return 'video/mp4';
+  if (hds_suffix.test(url))
+    return 'application/adobe-f4m';
+  if (flv_suffix.test(url))
+    return 'video/flv';
+  if (webm_suffix.test(url))
+    return 'video/webm';
+  if (yt_suffix.test(url)) {
+
+    return 'video/youtube';
+  }
+  if (dm_suffix.test(url))
+    return 'video/dailymotion';
+  if (vm_suffix.test(url))
+    return 'video/vimeo';
+
+  console.log('could not guess link type: "' + url + '" assuming mp4');
+  return 'video/mp4';
+};
+
+function getExt(ext) {
+
+  if (ext == "mp4" || ext == "m4v") ext = "m4v";
+  if (ext == "ogg" || ext == "ogv") ext = "oga";
+  if (ext == "webm") ext = "webmv";
+
+  return ext;
+}
+
+
+
+
+
+  //]]>
+
+
+
+         
+
+
+</script>
+    </head>
+<body style="margin:4px; padding:4px">
+
+<h1>Video Playback</h1>
+
+    <form id="video_playback">
+
+  <label for="StartTime">Please select start time:</label>
+  <input type="datetime-local" id="starttime" name="starttime">
+  <label for="EndTime">Please select end time:</label>
+  <input type="datetime-local" id="endtime" name="endtime">
+<input type="hidden" id="deviceID" value="">
+
+  <input type="submit" id="play" value="Play" >
+</form>
+
+  <video id="vid1" class="video-js vjs-default-skin vjs-fluid"  width="640" height="360" controls autoplay preload="none" data-setup='{ "techOrder": ["html5", "flash", "youtube"], "sources": [{ "type": "application/x-mpegURL", "src": ""}]}'></video> 
+
+</body>
+
+
+
+
+
+</html>
