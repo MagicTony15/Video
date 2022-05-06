@@ -78,7 +78,7 @@
           url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/record/video?key=" + apikey + "&terid=" + device + "&starttime=" + st + "&endtime=" + et + "&chl=1&st=1",
           success: function(data) {
               
-        
+             
 
              // Add the stream URL to player
                vsgLoadVideo(data.data.url);
@@ -129,7 +129,7 @@ vgsPlayer = videojs('vid1');
             
             
 function vsgLoadVideo(vidURL, poster) {
-
+  alert(vidURL);
   var type = getType(vidURL);
 
   console.log(type);
