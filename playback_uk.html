@@ -119,6 +119,38 @@ var getUrlParameter = function getUrlParameter(sParam) {
 }); // jQuery(function($) END
 
 
+
+
+
+
+         
+
+
+</script>
+    </head>
+<body style="margin:4px; padding:4px">
+
+<h1>Video Playback</h1>
+
+    <form id="video_playback">
+
+  <label for="StartTime">Please select start time:</label>
+  <input type="datetime-local" id="starttime" name="starttime">
+  <label for="EndTime">Please select end time:</label>
+  <input type="datetime-local" id="endtime" name="endtime">
+<input type="hidden" id="deviceID" value="">
+
+  <input type="submit" id="play" value="Play" >
+</form>
+  <div id="instructions">
+  <video id="vid1" class="video-js vjs-default-skin vjs-fluid"  width="640" height="360" controls autoplay preload="none" data-setup='{ "techOrder": ["html5", "flash", "youtube"], "sources": [{ "type": "application/x-mpegURL", "src": ""}]}'></video> 
+  </div>
+    
+</div>
+
+
+    <script type="text/javascript">//<![CDATA[
+        
 /* VIDEOJS */
 // declare object for video
 var vgsPlayer, poster;
@@ -227,36 +259,9 @@ function getExt(ext) {
   return ext;
 }
 
-
-
-
-
-  //]]>
-
-
-
-         
-
-
-</script>
-    </head>
-<body style="margin:4px; padding:4px">
-
-<h1>Video Playback</h1>
-
-    <form id="video_playback">
-
-  <label for="StartTime">Please select start time:</label>
-  <input type="datetime-local" id="starttime" name="starttime">
-  <label for="EndTime">Please select end time:</label>
-  <input type="datetime-local" id="endtime" name="endtime">
-<input type="hidden" id="deviceID" value="">
-
-  <input type="submit" id="play" value="Play" >
-</form>
-
-  <video id="vid1" class="video-js vjs-default-skin vjs-fluid"  width="640" height="360" controls autoplay preload="none" data-setup='{ "techOrder": ["html5", "flash", "youtube"], "sources": [{ "type": "application/x-mpegURL", "src": ""}]}'></video> 
-
+    
+  //]]>    
+</script>    
 </body>
 
 
