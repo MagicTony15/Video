@@ -84,14 +84,14 @@
       
             }                 
       });
-    
+      alert(apikey);
       $.ajax({
           type: "GET",
           dataType: "json",
           url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/record/video?key=" + apikey + "&terid=" + device + "&starttime=" + st + "&endtime=" + et + "&chl=1&st=1",
           success: function(data) {
               
-             
+              alert(data.data.url);
               BLoadVideo(data.data.url);
       
             }                 
