@@ -66,11 +66,24 @@
     et = et.replace(":","").replace("T","").replace("-","").replace("-","");
 
     var device = $("#deviceID").val();
-    var apikey = "zT908g2j9ngQW8ILJWnVvbgPojeHWCodnG3CEf6wayPjIlx9qVs4kA%3D%3D";
+    var username = $("#username").val();
+    var pass = $("#pass").val();      
+    var apikey = "";
     var link = "";
       
       
-   
+     $.ajax({
+          type: "GET",
+          dataType: "json",
+          url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/key?username=" + username + "&password=" + pass,
+          success: function(data) {
+              
+             
+
+             apikey = data.data.key;
+      
+            }                 
+      });
     
       $.ajax({
           type: "GET",
@@ -79,9 +92,7 @@
           success: function(data) {
               
              
-
-             // Add the stream URL to player
-               vsgLoadVideo(data.data.url);
+              BLoadVideo(data.data.url);
       
             }                 
       });
@@ -114,12 +125,24 @@ var getUrlParameter = function getUrlParameter(sParam) {
 
       // Add the stream URL to player
       $("#deviceID").val(getUrlParameter('device'));
+      $("#username").val(getUrlParameter('user'));
+      $("#pass").val(getUrlParameter('pass'));
+      
       
 
 }); // jQuery(function($) END
 
 
 
+function BLoadVideo(vidURL) {
+
+      
+    
+  $("#content").html('<iframe frameborder="1" src="' + vidURL + '" width="800" height="600" />' );
+ 
+  return false;
+
+}
 
 
 
@@ -139,128 +162,16 @@ var getUrlParameter = function getUrlParameter(sParam) {
   <label for="EndTime">Please select end time:</label>
   <input type="datetime-local" id="endtime" name="endtime">
 <input type="hidden" id="deviceID" value="">
-
+<input type="hidden" id="username" value="">
+        <input type="hidden" id="pass" value="">
   <input type="submit" id="play" value="Play" >
 </form>
-  <div id="instructions">
-  <video id="vid1" class="video-js vjs-default-skin vjs-fluid"  width="640" height="360" controls autoplay preload="none" data-setup='{ "techOrder": ["html5", "flash", "youtube"], "sources": [{ "type": "application/x-mpegURL", "src": ""}]}'></video> 
-  </div>
-    
-</div>
+
+   <div id="content">
+    </div>
 
 
-    <script type="text/javascript">//<![CDATA[
-        
-/* VIDEOJS */
-// declare object for video
-var vgsPlayer, poster;
 
-vgsPlayer = videojs('vid1');
-            
-            
-            
-            
-function vsgLoadVideo(vidURL, poster) {
-  alert(vidURL);
-  var type = getType(vidURL);
-
-  console.log(type);
-
-
-  vgsPlayer.src({
-    "src": vidURL,
-    "type": type
-  });
-
-  vgsPlayer.play();
-  
-  return false;
-
-}
-
-
-function ytVidId(url) {
-
-  var p = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
-
-  if (url.match(p) || getId(url).length == 11)
-    return false;
-}
-
-/**/
-function getId(url) {
-  var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
-  var match = url.match(regExp);
-
-  if (match && match[2].length == 11) {
-    return match[2];
-  } else {
-    return false;
-  }
-}
-
-var rtmp_suffix = /^rtmp:\/\//;
-var hls_suffix = /\.m3u8/;
-var mp4_suffix = /\.(mp4|m4p|m4v|mov)/i;
-var hds_suffix = /\.f4m/;
-var dash_suffix = /\.mpd/;
-var flv_suffix = /\.flv/;
-var webm_suffix = /\.webm/;
-/* AUDIO */
-//var mp3_suffix = /\.mp3/;
-var mpeg_suffix = /\.(mp3|m4a)/i;
-var ogg_suffix = /\.ogg/;
-
-
-var yt_suffix = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-var dm_suffix = /\.?dailymotion.com/;
-var vm_suffix = /\.?vimeo.com/;
-
-function getType(url) {
-
-  /* AUDIO */
-  if (mpeg_suffix.test(url))
-    return 'audio/mpeg';
-  if (ogg_suffix.test(url))
-    return 'audio/ogg';
-  if (dash_suffix.test(url))
-    return 'application/dash+xml';
-  if (rtmp_suffix.test(url))
-    return 'rtmp/mp4';
-  if (hls_suffix.test(url))
-    return 'application/x-mpegurl';
-  if (mp4_suffix.test(url))
-    return 'video/mp4';
-  if (hds_suffix.test(url))
-    return 'application/adobe-f4m';
-  if (flv_suffix.test(url))
-    return 'video/flv';
-  if (webm_suffix.test(url))
-    return 'video/webm';
-  if (yt_suffix.test(url)) {
-
-    return 'video/youtube';
-  }
-  if (dm_suffix.test(url))
-    return 'video/dailymotion';
-  if (vm_suffix.test(url))
-    return 'video/vimeo';
-
-  console.log('could not guess link type: "' + url + '" assuming mp4');
-  return 'video/mp4';
-};
-
-function getExt(ext) {
-
-  if (ext == "mp4" || ext == "m4v") ext = "m4v";
-  if (ext == "ogg" || ext == "ogv") ext = "oga";
-  if (ext == "webm") ext = "webmv";
-
-  return ext;
-}
-
-    
-  //]]>    
 </script>    
 </body>
 
