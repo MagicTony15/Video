@@ -68,21 +68,11 @@
     var device = $("#deviceID").val();
     var username = $("#username").val();
     var pass = $("#pass").val();      
-    var apikey = "";
+    var apikey = "zT908g2j9ngQW8ILJWnVvTjs54mokYa3VtniGnXqW%2F2AUTIanpJb5Q%3D%3D";
     var link = "";
       
-      
-     $.ajax({
-          type: "GET",
-          dataType: "json",
-          url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/key?username=" + username + "&password=" + pass,
-          success: function(data) {
-              
-             
 
-             apikey = data.data.key;
-              alert(apikey);
-              $.ajax({
+          $.ajax({
                   type: "GET",
                   dataType: "json",
                   url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/record/video?key=" + apikey + "&terid=" + device + "&starttime=" + st + "&endtime=" + et + "&chl=1&st=1",
@@ -93,9 +83,6 @@
 
                     }                 
               });
-            }                 
-      });
-      
     
 
     
