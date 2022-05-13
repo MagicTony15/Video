@@ -36,10 +36,10 @@
             e.preventDefault();
 
             var st = $("#starttime").val();
-            st = st.replace(":","").replace("T","").replace("-","").replace("-","");
+            st = st.replace("T"," ");
               
             var et = $("#endtime").val();
-            et = et.replace(":","").replace("T","").replace("-","").replace("-","");
+            et = et.replace("T"," ");
 
             var device = $("#deviceID").val();
     
