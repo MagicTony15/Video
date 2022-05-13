@@ -58,7 +58,7 @@
 
             function load(url) {
                 
-                alert(url);
+              
                 
                 var video_url = "https://portal.autoeyexpert.co.uk:22060/live.flv?devid=" + url + "&chl=1&st=1&isaudio=1";
                 
@@ -78,10 +78,7 @@
                     var newurl = video_url.replace('%c', c.toString());
                     play(i, newurl);
 
-                    video.oncontextmenu = function (e) {
-                        captureimage(video, 'test.png');
-                        return false;
-                    };
+                    
                 
             }
 
