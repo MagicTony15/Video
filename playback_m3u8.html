@@ -46,9 +46,7 @@
             var apikey = "zT908g2j9ngQW8ILJWnVvb5ZqDjtSYyYJN8LyzLhVOwAm8WFYwWceA%3D%3D";
             var link = "";
             
-              alert(device);
-              alert(st);
-              alert(et);
+              
 
                   $.ajax({
                           type: "GET",
@@ -58,12 +56,12 @@
 
                               alert(data.data.url);
                               link = data.data.url;
-
+                              loadall(link);
 
                             }                 
                       });
 
-                  loadall(link);
+                 
 
 
           });
