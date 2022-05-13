@@ -19,8 +19,7 @@
   <label for="EndTime">Please select end time:</label>
   <input type="datetime-local" id="endtime" name="endtime">
 <input type="hidden" id="deviceID" value="">
-<input type="hidden" id="username" value="">
-        <input type="hidden" id="pass" value="">
+
   <input type="submit" id="play" value="Play" >
 </form>
 
@@ -42,8 +41,7 @@
             et = et.replace(":","").replace("T","").replace("-","").replace("-","");
 
             var device = $("#deviceID").val();
-            var username = $("#username").val();
-            var pass = $("#pass").val();      
+    
             var apikey = "zT908g2j9ngQW8ILJWnVvb5ZqDjtSYyYJN8LyzLhVOwAm8WFYwWceA%3D%3D";
             var link = "";
             
@@ -89,9 +87,7 @@
 
               // Add the stream URL to player
               $("#deviceID").val(getUrlParameter('device'));
-              $("#username").val(getUrlParameter('user'));
-              $("#pass").val(getUrlParameter('pass'));
-
+            
 
 
         }); // jQuery(function($) END
