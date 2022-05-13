@@ -36,9 +36,9 @@
             e.preventDefault();
 
             var st = $("#starttime").val();
-            st = st.replace(":","").replace("T","").replace("-","").replace("-","");
+            st = st.replace(":","").replace("T","").replace("-","").replace("-","") + "00";
             var et = $("#endtime").val();
-            et = et.replace(":","").replace("T","").replace("-","").replace("-","");
+            et = et.replace(":","").replace("T","").replace("-","").replace("-","") + "00";
 
             var device = $("#deviceID").val();
     
