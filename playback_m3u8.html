@@ -1,0 +1,177 @@
+
+<meta charset="UTF-8" />
+<html>
+    <head>
+        <title data-lang="playback"></title>
+        <script type="text/javascript" src="https://magictony15.github.io/Video/hls.min.js"></script>
+    </head>
+
+    <body>
+        
+        
+        <h1>Video Playback</h1>
+
+    <form id="video_playback">
+
+  <label for="StartTime">Please select start time:</label>
+  <input type="datetime-local" id="starttime" name="starttime">
+  <label for="EndTime">Please select end time:</label>
+  <input type="datetime-local" id="endtime" name="endtime">
+<input type="hidden" id="deviceID" value="">
+<input type="hidden" id="username" value="">
+        <input type="hidden" id="pass" value="">
+  <input type="submit" id="play" value="Play" >
+</form>
+
+<div id="div_content" style="width: 100%; height: auto"></div>
+
+        
+        
+        <script type="text/javascript">
+ 
+         jQuery(function($) {
+
+
+          $("#video_playback").submit(function(e) {
+            e.preventDefault();
+
+            var st = $("#starttime").val();
+            st = st.replace(":","").replace("T","").replace("-","").replace("-","");
+            var et = $("#endtime").val();
+            et = et.replace(":","").replace("T","").replace("-","").replace("-","");
+
+            var device = $("#deviceID").val();
+            var username = $("#username").val();
+            var pass = $("#pass").val();      
+            var apikey = "zT908g2j9ngQW8ILJWnVvTjs54mokYa3VtniGnXqW%2F2AUTIanpJb5Q%3D%3D";
+            var link = "";
+
+
+                  $.ajax({
+                          type: "GET",
+                          dataType: "json",
+                          url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/record/video?key=" + apikey + "&terid=" + device + "&starttime=" + st + "&endtime=" + et + "&chl=1&st=1",
+                          success: function(data) {
+
+                              alert(data.data.url);
+                              loadall(data.data.url);
+
+                            }                 
+                      });
+
+
+
+
+          });
+
+        });
+
+          jQuery(document).ready(function($) {
+        var getUrlParameter = function getUrlParameter(sParam) {
+            // Get custom URL from HTML parameter
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+            return false;
+        };
+
+
+              // Add the stream URL to player
+              $("#deviceID").val(getUrlParameter('device'));
+              $("#username").val(getUrlParameter('user'));
+              $("#pass").val(getUrlParameter('pass'));
+
+
+
+        }); // jQuery(function($) END
+
+
+
+       
+            
+            function loadall(u) {
+                var count = 1;
+                var url = u;
+                var box = document.getElementById('div_content');
+                count = parseInt(count, 10);
+                var l = box.childNodes.length;
+                for (var i = l; i < l + count; i++) {
+                    var video = document.createElement('video');
+                    video.setAttribute('id', 'video' + i);
+                    video.setAttribute('style', 'float:left;margin-top:2px; margin-left:2px;');
+                    video.setAttribute('width', '600');
+                    video.setAttribute('height', '800');
+                    box.appendChild(video);
+
+                    var c = i;
+                    var newurl = url.replace('%c', c.toString());
+
+                   
+                    load(i, video, newurl);
+                    video.play();
+                }
+            }
+
+            function load(channel, video, url) {
+                var config = {
+                    autoStartLoad: true,
+                    debug: false,
+                    defaultAudioCodec: 'mp4a.40.2',
+                    enableWorker: false,
+                    manifestLoadingTimeOut: 30000,
+                    stretchShortVideoTrack: true,
+                    fragLoadingRetryDelay: 2000
+                };
+
+                var hls1 = new Hls(config, channel);
+
+                if (Hls.isSupported()) {
+                    //var url = url + channel.toString() + '/20170118_36000_39600.m3u8';
+                    video['hls'] = hls1;
+                    hls1.attachMedia(video);
+                    hls1.loadSource(url);
+                    //video1.play();
+                    hls1.on(Hls.Events.MEDIA_ATTACHED, function () {
+                        hls1.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                            // video1.play();
+                        });
+                    });
+                    hls1.on(Hls.Events.ERROR, function (event, data) {
+                        console.log(data.fatal ? 'fata' : '' + 'type:' + data.type + ' details:' + data.details);
+                        /*if (data.fatal)*/ {
+                            switch (data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                    // try to recover network error
+                                    console.log('fatal network error encountered, try to recover');
+                                    hls1.startLoad();
+                                    break;
+                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                    if (data.fatal) {
+                                        console.log('fatal media error encountered, try to recover');
+                                        hls1.recoverMediaError();
+                                    }
+                                    break;
+                                default:
+                                    //hls1.recoverMediaError();
+                                    //console.log("recoverMediaError");
+                                    // cannot recover
+                                    //hls.destroy();
+                                    break;
+                            }
+                        }
+                    });
+                }
+                return hls1;
+            }
+        </script>
+    </body>
+</html>
