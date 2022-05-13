@@ -54,12 +54,13 @@
                           success: function(data) {
 
                               alert(data.data.url);
-                              loadall(data.data.url);
+                              link = data.data.url;
+
 
                             }                 
                       });
 
-
+                  loadall(link);
 
 
           });
@@ -101,8 +102,7 @@
                 var url = u;
                 var box = document.getElementById('div_content');
                 count = parseInt(count, 10);
-                var l = box.childNodes.length;
-                for (var i = l; i < l + count; i++) {
+                var i =1;
                     var video = document.createElement('video');
                     video.setAttribute('id', 'video' + i);
                     video.setAttribute('style', 'float:left;margin-top:2px; margin-left:2px;');
@@ -116,7 +116,7 @@
                    
                     load(i, video, newurl);
                     video.play();
-                }
+                
             }
 
             function load(channel, video, url) {
