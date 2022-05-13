@@ -36,7 +36,9 @@
             e.preventDefault();
 
             var st = $("#starttime").val();
+            alert(st)
             st = st.replace(":","").replace("T","").replace("-","").replace("-","");
+              
             var et = $("#endtime").val();
             et = et.replace(":","").replace("T","").replace("-","").replace("-","");
 
