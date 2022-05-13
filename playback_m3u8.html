@@ -36,7 +36,6 @@
             e.preventDefault();
 
             var st = $("#starttime").val();
-            alert(st);
             st = st.replace(":","").replace("T","").replace("-","").replace("-","");
               
             var et = $("#endtime").val();
@@ -48,6 +47,8 @@
             var link = "";
             
               alert(device);
+              alert(st);
+              alert(et);
 
                   $.ajax({
                           type: "GET",
