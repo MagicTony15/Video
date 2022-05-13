@@ -36,9 +36,9 @@
             e.preventDefault();
 
             var st = $("#starttime").val();
-            st = st.replace(":","").replace("T","").replace("-","").replace("-","") + "00";
+            st = st.replace(":","").replace("T","").replace("-","").replace("-","");
             var et = $("#endtime").val();
-            et = et.replace(":","").replace("T","").replace("-","").replace("-","") + "00";
+            et = et.replace(":","").replace("T","").replace("-","").replace("-","");
 
             var device = $("#deviceID").val();
     
@@ -50,7 +50,7 @@
                   $.ajax({
                           type: "GET",
                           dataType: "json",
-                          url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/record/video?key=" + apikey + "&terid=" + device + "&starttime=" + st + "&endtime=" + et + "&chl=1&st=1",
+                          url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/record/video?key=" + apikey + "&terid=" + device + "&starttime=" + st + "00&endtime=" + et + "00&chl=1&st=1",
                           success: function(data) {
 
                               alert(data.data.url);
