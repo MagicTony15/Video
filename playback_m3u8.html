@@ -19,6 +19,9 @@
   <label for="EndTime">Please select end time:</label>
   <input type="datetime-local" id="endtime" name="endtime">
 <input type="hidden" id="deviceID" value="">
+<input type="hidden" id="username" value="">
+<input type="hidden" id="pass" value="">
+<input type="hidden" id="apikey" value="">
 
   <input type="submit" id="play" value="Play" >
 </form>
@@ -43,15 +46,16 @@
 
             var device = $("#deviceID").val();
     
-            var apikey = "zT908g2j9ngQW8ILJWnVvb5ZqDjtSYyYJN8LyzLhVOwAm8WFYwWceA%3D%3D";
+            var apikey = $("#apikey").val();
             var link = "";
             
               
-
-                  $.ajax({
+ $.ajax({
                           type: "GET",
                           dataType: "json",
-                          url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/record/video?key=" + apikey + "&terid=" + device + "&starttime=" + st + "00&endtime=" + et + "00&chl=1&st=1",
+                          url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/record/video?key=" + apikey + "&terid=" + device + "&starttime=" + st + "00&endtime=" + et + 
+
+"00&chl=1&st=1",
                           success: function(data) {
 
                               alert(data.data.url);
@@ -60,7 +64,7 @@
 
                             }                 
                       });
-
+              
                  
 
 
@@ -89,7 +93,23 @@
 
               // Add the stream URL to player
               $("#deviceID").val(getUrlParameter('device'));
+              $("#username").val(getUrlParameter('username'));
+              $("#pass").val(getUrlParameter('pass'));
             
+          
+           
+
+                 $.ajax({
+                          type: "GET",
+                          dataType: "json",
+                          url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/key?username=" + $("#username").val() + "&password=" + $("#pass").val(),
+                          success: function(data) {
+
+                               
+                              $("#apikey").val(data.data.key);
+
+                            }                 
+                      });
 
 
         }); // jQuery(function($) END
