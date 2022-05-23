@@ -29,29 +29,7 @@
             
          var result = "";    
           
-           // Builds the HTML Table out of myList json data from Ivy restful service.
-         function buildHtmlTable(json) {
-             
-
-
-              $("#tbodyid").empty();
-
-            for (var i=0; i<json.jsonData.length; i++) {
-                var row$ = $('<tr/>');
-               for (var key in json.jsonData[i].arguments) {
-                       var cellValue = json.jsonData[i].arguments[key].data.split('#');
-                       
-                       for(var i = 0; i < cellValue.length; i++) {
-                   
-                       row$.append($('<td/>').html(cellValue[i]));
-                       }
-                   
-               }
-               $("#excelDataTable").append(row$); 
-            }
-         } 
-            
-            
+        
         
           jQuery(document).ready(function($) {
         
@@ -67,7 +45,21 @@
                           headers: {"Authorization": "7YRsG9Kk3vT0gCbyjooReV1ZGJIwoAGDJOqGwi%2fmqkJ52ts304pJTkpUj4mLVVA7"}
                           success: function(data) {
                                alert(data);
-                               buildHtmlTable(data);
+                                $("#tbodyid").empty();
+
+                                    for (var i=0; i<json.jsonData.length; i++) {
+                                        var row$ = $('<tr/>');
+                                       for (var key in json.jsonData[i].arguments) {
+                                               var cellValue = json.jsonData[i].arguments[key].data.split('#');
+
+                                               for(var i = 0; i < cellValue.length; i++) {
+
+                                               row$.append($('<td/>').html(cellValue[i]));
+                                               }
+
+                                       }
+                                       $("#excelDataTable").append(row$); 
+                                    }
                               
                             }                 
                       });
