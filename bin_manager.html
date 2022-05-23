@@ -14,7 +14,7 @@
 
 <body onLoad="buildHtmlTable()">
 <table id="excelDataTable" border="1">
-<thead><th>Vehicle Name</th><th>Date</th><th>BIN S/N</th><th>*RFID</th><th>Bin Type</th><th>Zone</th><th>Acutal Weight</th><th>Total Weight</th><th>Daily Count</th><th>Total Count</th><th>Route</th></thead>
+<thead><th>Vehicle Name</th><th>Date</th><th>BIN S/N</th><th>Acutal Weight</th><th>Total Weight</th><th>Daily Count</th><th>Total Count</th><th>Route</th></thead>
     <tbody id = "table_tbody"></tbody>    
     
     </table>
@@ -40,11 +40,12 @@
                  $.ajax({
                           type: "GET",
                           dataType: "json",
-                          url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/key?username=" + $("#username").val() + "&password=" + $("#pass").val(),
+                          url:  "http://cloudfleet.datafix.ae/comGpsGate/api/v.1/applications/6/events?FromIndex=0&PageSize=1000&Date=2022-05-23&UserId=29&RuleId=9",
+                          headers: {"Authorization": "7YRsG9Kk3vT0gCbyjooReV1ZGJIwoAGDJOqGwi%2fmqkJ52ts304pJTkpUj4mLVVA7"}
                           success: function(data) {
 
-                               
-                              result = data.
+                               buildHtmlTable(data);
+                              
                             }                 
                       });
 
@@ -53,28 +54,27 @@
 
 
 
-       var myList=[{"name" : "abc", "age" : 50},
-            {"age" : "25", "hobby" : "swimming"},
-            {"name" : "xyz", "hobby" : "programming"}];
-
+     
         // Builds the HTML Table out of myList json data from Ivy restful service.
-         function buildHtmlTable() {
+         function buildHtmlTable(json) {
              
 
-               var columnSet = ['Vehicle Name','Date','BIN','RFID','Type','Zone','Acutal Weight','Total Weight','Daily Count','Total Count','Route'];
+
               $("#tbodyid").empty();
 
-             for (var i = 0 ; i < result.length ; i++) {
-                 var row$ = $('<tr/>');
-                 for (var colIndex = 0 ; colIndex < columns.length ; colIndex++) {
-                     var cellValue = myList[i][columns[colIndex]];
-
-                     if (cellValue == null) { cellValue = ""; }
-
-                     row$.append($('<td/>').html(cellValue));
-                 }
-                 $("#excelDataTable").append(row$);
-             }
+            for (var i=0; i<json.jsonData.length; i++) {
+                var row$ = $('<tr/>');
+               for (var key in json.jsonData[i].arguments) {
+                       var cellValue = json.jsonData[i].arguments[key].data.split('#');
+                       
+                       for(var i = 0; i < cellValue.length; i++) {
+                   
+                       row$.append($('<td/>').html(cellValue[i]));
+                       }
+                   
+               }
+               $("#excelDataTable").append(row$); 
+            }
          }
 
 
