@@ -47,10 +47,10 @@
                          
                                 $("#tbodyid").empty();
 
-                                    for (var i=0; i<json.jsonData.length; i++) {
+                                    for (var i=0; i<json.length; i++) {
                                         var row$ = $('<tr/>');
-                                       for (var key in json.jsonData[i].arguments) {
-                                               var cellValue = json.jsonData[i].arguments[key].data.split('#');
+                                       for (var key in json[i].arguments) {
+                                               var cellValue = json[i].arguments[key].data.split('#');
 
                                                for(var j = 0; j < cellValue.length; j++) {
 
