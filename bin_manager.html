@@ -1,0 +1,83 @@
+
+
+<meta charset="UTF-8" />
+<html>
+    <head>
+        <title data-lang="playback"></title>        
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    </head>
+
+    <body>
+        
+        
+        <h1 style="margin-top:2px;margin-left:2px;">Bin Manager</h1>
+
+<body onLoad="buildHtmlTable()">
+<table id="excelDataTable" border="1">
+<thead><th>Vehicle Name</th><th>Date</th><th>BIN S/N</th><th>*RFID</th><th>Bin Type</th><th>Zone</th><th>Acutal Weight</th><th>Total Weight</th><th>Daily Count</th><th>Total Count</th><th>Route</th></thead>
+    <tbody id = "table_tbody"></tbody>    
+    
+    </table>
+</body>
+
+
+
+        
+        
+        <script type="text/javascript">
+ 
+            
+         var result = "";    
+            
+        
+          jQuery(document).ready(function($) {
+        
+
+             
+          
+           
+
+                 $.ajax({
+                          type: "GET",
+                          dataType: "json",
+                          url:  "https://portal.autoeyexpert.co.uk/api/v1/basic/key?username=" + $("#username").val() + "&password=" + $("#pass").val(),
+                          success: function(data) {
+
+                               
+                              result = data.
+                            }                 
+                      });
+
+
+        }); // jQuery(function($) END
+
+
+
+       var myList=[{"name" : "abc", "age" : 50},
+            {"age" : "25", "hobby" : "swimming"},
+            {"name" : "xyz", "hobby" : "programming"}];
+
+        // Builds the HTML Table out of myList json data from Ivy restful service.
+         function buildHtmlTable() {
+             
+
+               var columnSet = ['Vehicle Name','Date','BIN','RFID','Type','Zone','Acutal Weight','Total Weight','Daily Count','Total Count','Route'];
+              $("#tbodyid").empty();
+
+             for (var i = 0 ; i < result.length ; i++) {
+                 var row$ = $('<tr/>');
+                 for (var colIndex = 0 ; colIndex < columns.length ; colIndex++) {
+                     var cellValue = myList[i][columns[colIndex]];
+
+                     if (cellValue == null) { cellValue = ""; }
+
+                     row$.append($('<td/>').html(cellValue));
+                 }
+                 $("#excelDataTable").append(row$);
+             }
+         }
+
+
+        </script>
+    </body>
+</html>
