@@ -16,7 +16,7 @@
 
     var device = $("#deviceID").val();
     var apikey = $("#apikey").val();
-    BLoadVideo("https://47.115.83.226:9966/vss/apiPage/ReplayVideo.html?token=" + apikey + "&deviceId=" + device + "&chs=1_2_3_4&st=" + st + "00&et=" + et + "00&wnum=4&panel=1&speed=4&buffer=3000");
+    BLoadVideo("http://47.115.83.226:9966/vss/apiPage/ReplayVideo.html?token=" + apikey + "&deviceId=" + device + "&chs=1_2_3_4&st=" + st + "00&et=" + et + "00&wnum=4&panel=1&speed=4&buffer=3000");
 
   });
 
@@ -43,30 +43,8 @@ var getUrlParameter = function getUrlParameter(sParam) {
 
       // Add the stream URL to player
       $("#deviceID").val(getUrlParameter('device'));
-      $("#username").val(getUrlParameter('username'));
-       $("#pass").val(getUrlParameter('pass')); 
+      $("#apikey").val(getUrlParameter('username'));
       
-      
-      
-      $.ajax({
-                          type: "POST",
-                          dataType: "json",
-                          url:  "https://47.115.83.226:9966/vss/user/apiLogin.action",
-                          data: '{"username":"' + $("#username").val() + ',"password":"' + $("#pass").val() + '"',
-                          contentType: "application/json",
-                          Accept: "application/json",
-                          success: function(data) {
-
-                               
-                              $("#apikey").val(data.data.key);
-
-                            }                 
-                      });
-
-
-
-
-      alert($("#apikey").val());
 
 }); // jQuery(function($) END
 
