@@ -52,7 +52,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
                           type: "POST",
                           dataType: "json",
                           url:  "http://47.115.83.226:9966/vss/user/apiLogin.action",
-                          data: jQuery.param(username: $("#username").val(), password: $("#pass").val()),
+                          data: jQuery.param("username": $("#username").val(), "password": $("#pass").val()),
                           Content-Type: application/json,
                           Accept: application/json,
                           success: function(data) {
