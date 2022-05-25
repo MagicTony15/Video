@@ -15,8 +15,8 @@
     et = et.replace(":","").replace("T","").replace("-","").replace("-","");
 
     var device = $("#deviceID").val();
-
-    BLoadVideo("http://47.115.83.226:9966/vss/apiPage/ReplayVideo.html?token=695b21f48a7347d99c484c9934d7645f&deviceId=" + device + "&chs=1_2_3_4&st=" + st + "00&et=" + et + "00&wnum=4&panel=1&speed=4&buffer=3000");
+    var apikey = $("#apikey").val();
+    BLoadVideo("http://47.115.83.226:9966/vss/apiPage/ReplayVideo.html?token=" + apikey + "&deviceId=" + device + "&chs=1_2_3_4&st=" + st + "00&et=" + et + "00&wnum=4&panel=1&speed=4&buffer=3000");
 
   });
 
@@ -43,7 +43,30 @@ var getUrlParameter = function getUrlParameter(sParam) {
 
       // Add the stream URL to player
       $("#deviceID").val(getUrlParameter('device'));
+      $("#username").val(getUrlParameter('username'));
+       $("#pass").val(getUrlParameter('pass')); 
       
+      
+      
+      $.ajax({
+                          type: "POST",
+                          dataType: "json",
+                          url:  "http://47.115.83.226:9966/vss/user/apiLogin.action",
+                          data: jQuery.param(username: $("#username").val, password: $("#pass").val()),
+                          Content-Type: application/json,
+                          Accept: application/json,
+                          success: function(data) {
+
+                               
+                              $("#apikey").val(data.data.key);
+
+                            }                 
+                      });
+
+
+        }); // jQuery(function($) END
+
+      alert($("#apikey").val());
 
 }); // jQuery(function($) END
 
@@ -72,6 +95,9 @@ function BLoadVideo(vidURL) {
   <label for="EndTime">Please select end time:</label>
   <input type="datetime-local" id="endtime" name="endtime">
 <input type="hidden" id="deviceID" value="">
+        <input type="hidden" id="username" value="">
+<input type="hidden" id="pass" value="">
+<input type="hidden" id="apikey" value="">
   <input type="submit" id="play" value="Play" >
 </form>
 
