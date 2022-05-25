@@ -51,7 +51,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
       $.ajax({
                           type: "POST",
                           dataType: "json",
-                          url:  "http://47.115.83.226:9966/vss/user/apiLogin.action",
+                          url:  "https://47.115.83.226:9966/vss/user/apiLogin.action",
                           data: '{"username":"' + $("#username").val() + ',"password":"' + $("#pass").val() + '"',
                           contentType: "application/json",
                           Accept: "application/json",
