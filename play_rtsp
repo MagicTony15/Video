@@ -60,7 +60,7 @@
                 
               
                 
-                var video_url = "https://portal.autoeyexpert.co.uk:22060/live.flv?devid=" + url + "&chl=1&st=1&isaudio=1";
+                var video_url = url;
                 
                 var box = document.getElementById('div_content');
                 
