@@ -2,26 +2,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title data-lang="liveVideo"></title>
-        <script src="https://magictony15.github.io/Video/flv.js"></script>
+        <script type="text/javascript" src="https://flashphoner.com/downloads/builds/flashphoner_client/wcs_api-2.0/current/flashphoner.js"></script>
+
     </head>
 
     <body>
-        <style type="text/css">
-            body {
-                color: red;
-            }
-            h1 {
-                color: #00ff00;
-            }
-            p.ex {
-                color: rgb(0, 0, 255);
-            }
-
-            video {
-                object-fit: fill;
-            }
-        </style>
-
+       <style>
+        .fp-Video {
+            border: 1px double black;
+            width: 322px;
+            height: 242px;
+        }
+        .display {
+            width: 100%;
+            height: 100%;
+            display: inline-block;
+        }
+        .display > video,
+        object {
+            width: 100%;
+            height: 100%;
+        }
+</style>
 
 
         <div id="div_content" style="width: 100%; height: auto"></div>
@@ -62,113 +64,31 @@
                 
                 var video_url = url;
                 
-                var box = document.getElementById('div_content');
-                
-                var i = 1;
-                    var video = document.createElement('video');
-                    video.setAttribute('id', 'video' + i);
-                    video.setAttribute('style', 'float:left;margin-top:2px; margin-left:2px;');
-                    video.setAttribute('width', '500px');
-                    video.setAttribute('height', '500px');
-                    //video.setAttribute('ondblclick', 'fullscreen(' + 'video' + i + ')');
-                    //video.setAttribute('object-fit', 'fill');
-                    //video.setAttribute('height', '100%');
-                    box.appendChild(video);
-                    var c = i + 1;
-                    var newurl = video_url.replace('%c', c.toString());
-                    play(i, newurl);
+                //Status constants
+            var SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
+            var STREAM_STATUS = Flashphoner.constants.STREAM_STATUS;
+            var session;
+            var PRELOADER_URL = "https://github.com/flashphoner/flashphoner_client/raw/wcs_api-2.0/examples/demo/dependencies/media/preloader.mp4";
 
-                    
-                
-            }
+            //Init Flashphoner API on page load
 
-            function play(i, url) {
-                var video = document.getElementById('video' + i);
-                liveplay(video, url);
-            }
-            function closeplay() {
-                var box = document.getElementById('div_content');
-                for (var i = 0; i < box.childNodes.length; i++) {
-                    var video = box.childNodes[i];
-                    liveplaystop(video);
-                }
-                while (box.firstChild) {
-                    box.removeChild(box.firstChild);
-                }
-            }
-            function fast() {
-                var video = document.getElementById('video0');
-                video.playbackRate = 4;
-            }
-            function snap() {
-                var video = document.getElementById('video0');
-                captureimage(video, 'test.png');
-            }
-            function sub() {
-                var video = document.getElementById('video0');
-                var subtext = document.getElementById('subtext').value;
-                showsub(video, subtext);
-            }
-            var curretstream = 0;
-            function sub2() {
-                var video = document.getElementById('video0');
-                if (curretstream) {
-                    video.flvPlayer.changestream(0);
-                    curretstream = 0;
-                } else {
-                    video.flvPlayer.changestream(1);
-                    curretstream = 1;
-                }
-            }
-            function fullscreen(video) {
-                if (!video._fullscreen) {
-                    requestFullScreen(video);
-                    video._fullscreen = true;
-                } else {
-                    exitFullscreen();
-                    video._fullscreen = false;
-                }
-            }
-            //进入全屏
-            function requestFullScreen(de) {
-                if (de.requestFullscreen) {
-                    de.requestFullscreen();
-                } else if (de.mozRequestFullScreen) {
-                    de.mozRequestFullScreen();
-                } else if (de.webkitRequestFullScreen) {
-                    de.webkitRequestFullScreen();
-                }
-            }
-            //退出全屏
-            function exitFullscreen() {
-                var de = document;
-                if (de.exitFullscreen) {
-                    de.exitFullscreen();
-                } else if (de.mozCancelFullScreen) {
-                    de.mozCancelFullScreen();
-                } else if (de.webkitCancelFullScreen) {
-                    de.webkitCancelFullScreen();
-                }
-            }
-        </script>
-        <!--<div style="width:100%;height:auto">
-        <div style="float:left;margin-left: 5px;">
-            <video id="video1" width="800" height="650"></video>
-        </div>
-
-        <script>
-            if (flvjs.isSupported()) {
-                var video = document.getElementById('video1');
-                var flvPlayer = flvjs.createPlayer({
-                    type: 'flv',
-                    //url: 'ws://222.215.118.25:8447/'
-                    url: 'ws://61.166.128.29/ws4.stream.huya.com/huyalive/49104985-2482509468-10662296977070358528-1574648464-10057-A-1478572926-1.flv?wsSecret=086fb76709e646ab14aabcd987f8dedb&wsTime=5821752a&wshc_tag=0&wsts_tag=5821752a&wsid_tag=e6af2ff&wsiphost=ipdbm'
+                Flashphoner.init({});
+                //Connect to WCS server over websockets
+                session = Flashphoner.createSession({
+                    urlServer: "wss://demo.flashphoner.com" //specify the address of your WCS
+                }).on(SESSION_STATUS.ESTABLISHED, function(session) {
+                    console.log("ESTABLISHED");
                 });
-                flvPlayer.attachMediaElement(video);
-                flvPlayer.load();
-                flvPlayer.play();
+
+                session.createStream({
+                    name: video_url, //specify the RTSP stream address
+                    display: document.getElementById("play"),
+                }).play();
             }
+
+        
+
         </script>
-    </div>-->
+    
     </body>
 </html>
