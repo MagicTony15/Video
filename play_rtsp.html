@@ -1,100 +1,134 @@
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8" />
+<html>
     <head>
-        <title data-lang="liveVideo"></title>
-        <script type="text/javascript" src="https://flashphoner.com/downloads/builds/flashphoner_client/wcs_api-2.0/current/flashphoner.js"></script>
-
+        <title data-lang="playback"></title>
+        <script type="text/javascript" src="https://magictony15.github.io/Video/hls.min.js"></script>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
 
     <body>
-       <style>
-        .fp-Video {
-            border: 1px double black;
-            width: 322px;
-            height: 242px;
-        }
-        .display {
-            width: 100%;
-            height: 100%;
-            display: inline-block;
-        }
-        .display > video,
-        object {
-            width: 100%;
-            height: 100%;
-        }
-</style>
+        
+        
+        
 
 
-       <body onload="init_api()">
-        <div class="fp-Video">
-            <div id="play" class="display"></div>
-        </div>
-        <br />
 
+<div id="div_content" style="width: 100%; height: auto"></div>
 
-        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        
+        
         <script type="text/javascript">
-            
-            
-            
-            jQuery(document).ready(function($) {
-                var getUrlParameter = function getUrlParameter(sParam) {
-                    // Get custom URL from HTML parameter
-                    var sPageURL = window.location.search.substring(1),
-                        sURLVariables = sPageURL.split('&'),
-                        sParameterName,
-                        i;
+ 
+         jQuery(function($) {
 
-                    for (i = 0; i < sURLVariables.length; i++) {
-                        sParameterName = sURLVariables[i].split('=');
-
-                        if (sParameterName[0] === sParam) {
-                            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
-                        }
-                    }
-                    return false;
-                };
-                // Add the stream URL to player
-                  
-                
-                  load(getUrlParameter('stream'));
-
-
-            }); // jQuery(function($) END
-    
-
-            function load(url) {
-                
-              
-                
-                var video_url = url;
-                
-                //Status constants
-            var SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
-            var STREAM_STATUS = Flashphoner.constants.STREAM_STATUS;
-            var session;
-            var PRELOADER_URL = "https://github.com/flashphoner/flashphoner_client/raw/wcs_api-2.0/examples/demo/dependencies/media/preloader.mp4";
-
-            //Init Flashphoner API on page load
-
-                Flashphoner.init({});
-                //Connect to WCS server over websockets
-                session = Flashphoner.createSession({
-                    urlServer: "wss://demo.flashphoner.com" //specify the address of your WCS
-                }).on(SESSION_STATUS.ESTABLISHED, function(session) {
-                    console.log("ESTABLISHED");
-                });
-
-                session.createStream({
-                    name: video_url, //specify the RTSP stream address
-                    display: document.getElementById("play"),
-                }).play();
-            }
 
         
 
+          jQuery(document).ready(function($) {
+        var getUrlParameter = function getUrlParameter(sParam) {
+            // Get custom URL from HTML parameter
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+            return false;
+        };
+
+
+              // Add the stream URL to player
+              var stream_url = getUrlParameter('stream');
+              
+              loadall(stream_url);
+
+
+        }); // jQuery(function($) END
+
+
+
+       
+            
+            function loadall(u) {
+                var count = 1;
+                var url = u;
+                var box = document.getElementById('div_content');
+                count = parseInt(count, 10);
+                var i =1;
+                    var video = document.createElement('video');
+                    video.setAttribute('id', 'video' + i);
+                    video.setAttribute('style', 'float:left;margin-top:2px; margin-left:2px;');
+                    video.setAttribute('width', '600');
+                    video.setAttribute('height', '400');
+                    box.appendChild(video);
+
+                    var c = i;
+                    var newurl = url.replace('%c', c.toString());
+
+                   
+                    load(i, video, newurl);
+                    video.play();
+                
+            }
+
+            function load(channel, video, url) {
+                var config = {
+                    autoStartLoad: true,
+                    debug: false,
+                    defaultAudioCodec: 'mp4a.40.2',
+                    enableWorker: false,
+                    manifestLoadingTimeOut: 30000,
+                    stretchShortVideoTrack: true,
+                    fragLoadingRetryDelay: 2000
+                };
+
+                var hls1 = new Hls(config, channel);
+
+                if (Hls.isSupported()) {
+                    //var url = url + channel.toString() + '/20170118_36000_39600.m3u8';
+                    video['hls'] = hls1;
+                    hls1.attachMedia(video);
+                    hls1.loadSource(url);
+                    //video1.play();
+                    hls1.on(Hls.Events.MEDIA_ATTACHED, function () {
+                        hls1.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                            // video1.play();
+                        });
+                    });
+                    hls1.on(Hls.Events.ERROR, function (event, data) {
+                        console.log(data.fatal ? 'fata' : '' + 'type:' + data.type + ' details:' + data.details);
+                        /*if (data.fatal)*/ {
+                            switch (data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                    // try to recover network error
+                                    console.log('fatal network error encountered, try to recover');
+                                    hls1.startLoad();
+                                    break;
+                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                    if (data.fatal) {
+                                        console.log('fatal media error encountered, try to recover');
+                                        hls1.recoverMediaError();
+                                    }
+                                    break;
+                                default:
+                                    //hls1.recoverMediaError();
+                                    //console.log("recoverMediaError");
+                                    // cannot recover
+                                    //hls.destroy();
+                                    break;
+                            }
+                        }
+                    });
+                }
+                return hls1;
+            }
         </script>
-    
     </body>
 </html>
