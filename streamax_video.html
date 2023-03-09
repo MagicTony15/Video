@@ -1,0 +1,194 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title data-lang="liveVideo"></title>
+        <script src="https://magictony15.github.io/Video/flv.js"></script>
+    </head>
+
+    <body>
+        <style type="text/css">
+            body {
+                color: red;
+            }
+            h1 {
+                color: #00ff00;
+            }
+            p.ex {
+                color: rgb(0, 0, 255);
+            }
+
+            video {
+                object-fit: fill;
+            }
+        </style>
+
+
+
+        <div id="div_content" style="width: 100%; height: auto"></div>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript">
+            
+            
+            
+            jQuery(document).ready(function($) {
+                var getUrlParameter = function getUrlParameter(sParam) {
+                    // Get custom URL from HTML parameter
+                    var sPageURL = window.location.search.substring(1),
+                        sURLVariables = sPageURL.split('&'),
+                        sParameterName,
+                        i;
+
+                    for (i = 0; i < sURLVariables.length; i++) {
+                        sParameterName = sURLVariables[i].split('=');
+
+                        if (sParameterName[0] === sParam) {
+                            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                        }
+                    }
+                    return false;
+                };
+                // Add the stream URL to player
+                  
+                
+                  load(getUrlParameter('uid'));
+
+
+            }); // jQuery(function($) END
+    
+
+            function load(uid) {
+                
+               var sign = "883ef336999db2f941d2e609c65e3ebac87fbbbc2fc86ba67eb15e96fadcd0caa1a1717063db229652ef40d8cca0c63b41e8e1867cdff664ad694cc74b26fef57b71e72c83a4766e8cb964949adff37622b2f5d12275738c9d673b2afc9e9dbcacf1f4e6613ecdc3885ccf24700806ad73ee6358a35a33b52c7889b74205edb4fccf66c246f80678caefc19dde38a362";
+               var ten  ="986";
+               
+                
+                var video_url = "https://eur-ftcloud.ifleetvision.com:20501//openapi/media/live/link?audio=1&channels=1&mediaType=1&quality=1&streamType=2&uniqueId=" + uid;
+                
+                
+                  $.ajax({
+                  type: "GET",
+                  dataType: "json",
+                  headers: {"_sign": sign, "_tenantid": ten},
+                  url:  https://eur-ftcloud.ifleetvision.com:20501//openapi/media/live/link?audio=1&channels=1&mediaType=1&quality=1&streamType=2&uniqueId=" + uid,
+                  success: function(data) {
+
+                      alert(data.data.url);
+                      
+                    var video_url=data.data.url;  
+                    
+                    var box = document.getElementById('div_content');
+                
+                    var i = 1;
+                    var video = document.createElement('video');
+                    video.setAttribute('id', 'video' + i);
+                    video.setAttribute('style', 'float:left;margin-top:2px; margin-left:2px;');
+                    video.setAttribute('width', '500px');
+                    video.setAttribute('height', '500px');
+                    //video.setAttribute('ondblclick', 'fullscreen(' + 'video' + i + ')');
+                    //video.setAttribute('object-fit', 'fill');
+                    //video.setAttribute('height', '100%');
+                    box.appendChild(video);
+                    var c = i + 1;
+                    var newurl = video_url.replace('%c', c.toString());
+                    play(i, newurl);
+                     }                 
+                });
+                 
+                
+                
+               
+
+                    
+                
+            }
+
+            function play(i, url) {
+                var video = document.getElementById('video' + i);
+                liveplay(video, url);
+            }
+            function closeplay() {
+                var box = document.getElementById('div_content');
+                for (var i = 0; i < box.childNodes.length; i++) {
+                    var video = box.childNodes[i];
+                    liveplaystop(video);
+                }
+                while (box.firstChild) {
+                    box.removeChild(box.firstChild);
+                }
+            }
+            function fast() {
+                var video = document.getElementById('video0');
+                video.playbackRate = 4;
+            }
+            function snap() {
+                var video = document.getElementById('video0');
+                captureimage(video, 'test.png');
+            }
+            function sub() {
+                var video = document.getElementById('video0');
+                var subtext = document.getElementById('subtext').value;
+                showsub(video, subtext);
+            }
+            var curretstream = 0;
+            function sub2() {
+                var video = document.getElementById('video0');
+                if (curretstream) {
+                    video.flvPlayer.changestream(0);
+                    curretstream = 0;
+                } else {
+                    video.flvPlayer.changestream(1);
+                    curretstream = 1;
+                }
+            }
+            function fullscreen(video) {
+                if (!video._fullscreen) {
+                    requestFullScreen(video);
+                    video._fullscreen = true;
+                } else {
+                    exitFullscreen();
+                    video._fullscreen = false;
+                }
+            }
+            //进入全屏
+            function requestFullScreen(de) {
+                if (de.requestFullscreen) {
+                    de.requestFullscreen();
+                } else if (de.mozRequestFullScreen) {
+                    de.mozRequestFullScreen();
+                } else if (de.webkitRequestFullScreen) {
+                    de.webkitRequestFullScreen();
+                }
+            }
+            //退出全屏
+            function exitFullscreen() {
+                var de = document;
+                if (de.exitFullscreen) {
+                    de.exitFullscreen();
+                } else if (de.mozCancelFullScreen) {
+                    de.mozCancelFullScreen();
+                } else if (de.webkitCancelFullScreen) {
+                    de.webkitCancelFullScreen();
+                }
+            }
+        </script>
+        <!--<div style="width:100%;height:auto">
+        <div style="float:left;margin-left: 5px;">
+            <video id="video1" width="800" height="650"></video>
+        </div>
+
+        <script>
+            if (flvjs.isSupported()) {
+                var video = document.getElementById('video1');
+                var flvPlayer = flvjs.createPlayer({
+                    type: 'flv',
+                    //url: 'ws://222.215.118.25:8447/'
+                    url: 'ws://61.166.128.29/ws4.stream.huya.com/huyalive/49104985-2482509468-10662296977070358528-1574648464-10057-A-1478572926-1.flv?wsSecret=086fb76709e646ab14aabcd987f8dedb&wsTime=5821752a&wshc_tag=0&wsts_tag=5821752a&wsid_tag=e6af2ff&wsiphost=ipdbm'
+                });
+                flvPlayer.attachMediaElement(video);
+                flvPlayer.load();
+                flvPlayer.play();
+            }
+        </script>
+    </div>-->
+    </body>
+</html>
