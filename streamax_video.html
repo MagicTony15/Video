@@ -58,7 +58,7 @@
 
             function load(uid) {
                 
-               var sign = "883ef336999db2f941d2e609c65e3ebac87fbbbc2fc86ba67eb15e96fadcd0caa1a1717063db229652ef40d8cca0c63b41e8e1867cdff664ad694cc74b26fef57b71e72c83a4766e8cb964949adff37622b2f5d12275738c9d673b2afc9e9dbcacf1f4e6613ecdc3885ccf24700806ad73ee6358a35a33b52c7889b74205edb4fccf66c246f80678caefc19dde38a362";
+              /* var sign = "883ef336999db2f941d2e609c65e3ebac87fbbbc2fc86ba67eb15e96fadcd0caa1a1717063db229652ef40d8cca0c63b41e8e1867cdff664ad694cc74b26fef57b71e72c83a4766e8cb964949adff37622b2f5d12275738c9d673b2afc9e9dbcacf1f4e6613ecdc3885ccf24700806ad73ee6358a35a33b52c7889b74205edb4fccf66c246f80678caefc19dde38a362";
                var ten  ="986";
                
                 
@@ -75,7 +75,12 @@
                       alert(data.data.url);
                       
                     var video_url=data.data.url;  
-                    video_url="https://eur-ftcloud.ifleetvision.com:21005/video/7a53800d-8118-0f2a-380-aae0080fac059.flv";
+                    
+                     }                 
+                });
+                 */
+                
+                var video_url="https://eur-ftcloud.ifleetvision.com:21005/video/7a53800d-8118-0f2a-380-aae0080fac059.flv";
                       
                     var box = document.getElementById('div_content');
                     
@@ -92,11 +97,6 @@
                     var c = i + 1;
                     var newurl = video_url.replace('%c', c.toString());
                     play(i, newurl);
-                     }                 
-                });
-                 
-                
-                
                
 
                     
