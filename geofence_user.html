@@ -1,0 +1,117 @@
+<html>
+
+<head>
+      <meta charset="utf-8">
+      <meta content="" name="description">
+
+      <title>Users in Geofence</title>
+      <link href="./ThirdPartyLibs/Relation/relationship.css" rel="stylesheet">
+      <style>
+          div.absolute {
+              position: absolute;
+              top: 10px;
+          }
+
+          div.box {
+              margin-top: 10px;
+              margin-left: 10px;
+              margin-bottom: 10px;
+          }
+      </style>
+</head>
+
+<body>
+      <div class="container">
+            <div class="showcase absolute">
+                  <canvas height="600" width="600" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas>
+            </div>
+            <script src="./ThirdPartyLibs/D3/d3.min.js"></script>
+            <script src="./ThirdPartyLibs/Relation/relation.js"></script>
+            <script>
+                  var load = function () {
+                        var regex = new RegExp("[?&]applicationid(=([^&#]*)|&|#|$)");
+                        var parsedUrl = regex.exec(window.location.href);
+                        if (!parsedUrl || !parsedUrl[2]) {
+                              alert('missing "applicationid" parameter in query string');
+                              return;
+                        }
+
+                        var applicationid = parsedUrl[2];
+
+                        regex = new RegExp("[?&]geofenceid(=([^&#]*)|&|#|$)");
+                        parsedUrl = regex.exec(window.location.href);
+						if (!parsedUrl || !parsedUrl[2]) {
+                              alert('missing "geofenceid" parameter in query string');
+                              return;
+                        }
+						
+						var geofenceid = parsedUrl[2];
+
+                        var pagesize = 10000;
+
+                        var domain = "https://training.gpsgate.com";
+                        var apiPath = '/comGpsGate/api/v.1/';
+
+                         $.ajax({
+                          type: "GET",
+                          dataType: "json",
+                          url:  domain + apiPath + 'applications/' + applicationid + '/geofences/' + geofenceid + '/users?pagesize=' + pagesize,
+                          headers: {
+                            "Authorization": "41xD9RECuDPQQSdCRpHbOJFbUcNTclhd3n3HomOx68FZEl9pkWbx5qfWYQISjHbn"
+                          },
+                             success: function(users) {
+                        
+                                          
+                                          var canvas = document.querySelector("canvas"),
+                                                width = 600,
+                                                height = 600;
+
+                                          // building nodes:
+                                          // o = [ 
+                                          //  {id:0, name: "applicationId"}, // application node
+                                          //  {id:1, name: "geofence0.name"}, // geofences nodes
+                                          //  {id:2, name: "geofence1.name"},
+                                          //  ... 
+                                          //  {id:n+1, name: "geofencen.name"}, 
+                                          //  {id:n+1, name: "user0.name"}, // users nodes
+                                          //  {id:n+2, name: "user1.name"},
+                                          //  ... 
+                                          //  {id:n+1+m, name: "userm.name"}
+                                          // ]
+
+                                          var o = [];
+										  
+										  o.push({ id: 0, name: "Geofence" });
+                                          o[0].radius = 14;
+                                          o[0].color = "#FFA142";
+												
+                                          for (var u = 0; u < users.length; ++u) {
+                                                o.push({ id: 1 + u, name: users[u].name });
+                                                o[1 + u].radius = 10;
+                                                o[1 + u].color = "#FF85C2";
+                                          }
+
+                                          // building relations:
+                                          var i = [];
+
+                                          // geofence
+                                          i.push({ source: 0, target: 1 });
+										  
+  										  // geofence/users
+										  for (var u = 0; u < users.length; u++) {
+												i.push({ source: 0, target: 1 + u });
+										  } 
+
+                                          var s = new relation;
+                                          s.setNodes(o), s.setLinks(i), s.setCanvas(canvas), s.setSize(width, height), s.setRadius(12), s.setLinkLength(90), s.setCharge(-60), s.init(), s.run()
+
+                             }
+                              });
+                  };
+                  load();
+
+            </script>
+      </div>
+</body>
+
+</html>
