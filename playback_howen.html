@@ -1,0 +1,90 @@
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script>
+
+ jQuery(function($) {
+
+
+  $("#video_playback").submit(function(e) {
+    e.preventDefault();
+
+    var st = $("#starttime").val();
+    st = st.replace(":","").replace("T","").replace("-","").replace("-","");
+    var et = $("#endtime").val();
+    et = et.replace(":","").replace("T","").replace("-","").replace("-","");
+
+    var device = $("#deviceID").val();
+    var apikey = $("#apikey").val();
+    BLoadVideo("https://vss.howentech.com:9966/vss/apiPage/ReplayVideo.html?token=" + apikey + "&deviceId=" + device + "&chs=1_2_3_4&st=" + st + "00&et=" + et + "00&wnum=4&panel=1&speed=4&buffer=3000");
+
+  });
+
+});
+
+  jQuery(document).ready(function($) {
+var getUrlParameter = function getUrlParameter(sParam) {
+    // Get custom URL from HTML parameter
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
+      
+
+      // Add the stream URL to player
+      $("#deviceID").val(getUrlParameter('device'));
+      $("#apikey").val(getUrlParameter('apikey'));
+      
+
+}); // jQuery(function($) END
+
+
+function BLoadVideo(vidURL) {
+
+      
+    
+  $("#content").html('<iframe frameborder="1" src="' + vidURL + '" width="800" height="600" />' );
+ 
+  return false;
+
+}
+
+
+</script>
+    </head>
+<body style="margin:4px; padding:4px">
+
+<h1>Video Playback</h1>
+
+    <form id="video_playback">
+
+  <label for="StartTime">Please select start time:</label>
+  <input type="datetime-local" id="starttime" name="starttime">
+  <label for="EndTime">Please select end time:</label>
+  <input type="datetime-local" id="endtime" name="endtime">
+<input type="hidden" id="deviceID" value="">
+        <input type="hidden" id="username" value="">
+<input type="hidden" id="pass" value="">
+<input type="hidden" id="apikey" value="">
+  <input type="submit" id="play" value="Play" >
+</form>
+
+   <div id="content">
+    </div>
+</body>
+
+
+
+
+
+</html>
