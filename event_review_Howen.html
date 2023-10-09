@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Videojs 6  - Load Video Dynamically with the right TYPE</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+    type="text/javascript"
+    src="//code.jquery.com/jquery-2.1.3.js"
+    
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://vjs.zencdn.net/6.2/video.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.12.2/videojs-contrib-hls.min.js"></script>
+      <script type="text/javascript" src="https://cdn.rawgit.com/videojs/videojs-youtube/master/src/Youtube.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/2.4.1/dash.all.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-dash/2.8.1/videojs-dash.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://vjs.zencdn.net/6.2/video-js.css">
+
+
+  <style id="compiled-css" type="text/css">
+        #instructions {
+    max-width: 640px;
+    text-align: left;
+    margin: 0px auto;
+  }
+  
+  #instructions textarea {
+    width: 100%;
+    height: 100px;
+  }
+  /* Show the controls (hidden at the start by default) */
+  
+  .video-js .vjs-control-bar {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  /* Make the demo a little prettier */
+  
+  body {
+    background: #222;
+    text-align: center;
+    color: #aaa;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: radial-gradient(#333, hsl(200, 30%, 6%));
+  }
+  
+  a,
+  a:hover,
+  a:visited {
+    color: #76DAFF;
+  }
+
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+<h1>Event Evidence</h1>
+  <form id="event_search">
+
+  <label for="StartTime">Please select start time:</label>
+  <input type="datetime-local" id="starttime" name="starttime">
+  <label for="EndTime">Please select end time:</label>
+  <input type="datetime-local" id="endtime" name="endtime">
+<input type="hidden" id="deviceID" value="">
+    <input type="hidden" id="Token" value="">
+  <input type="submit" id="play" value="Play" >
+</form>
+<table id="excelDataTable" border="1" width=90%>
+<thead><th>Vehicle Name</th><th>Start DateTime</th><th>End DateTime</th><th>Video</th><th>Picture</th></thead>
+    <tbody id = "table_tbody"></tbody>    
+    
+    </table>
+
+    <div id="instructions" style="display:none">
+
+<video id="vid1" class="video-js vjs-default-skin vjs-fluid"  width="640" height="360" controls autoplay preload="none" data-setup='{ "techOrder": ["html5", "flash", "youtube"], "sources": [{ "type": "application/x-mpegURL", "src": ""}]}'></video> 
+
+
+</div>
+
+
+    <script type="text/javascript">//<![CDATA[
+
+
+/* VIDEOJS */
+// declare object for video
+var vgsPlayer, poster;
+
+vgsPlayer = videojs('vid1');
+
+
+
+  jQuery(document).ready(function($) {
+var getUrlParameter = function getUrlParameter(sParam) {
+    // Get custom URL from HTML parameter
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
+      $("#deviceID").val(getUrlParameter('device'));
+      $("#Token").val(getUrlParameter('token'));
+
+      // Add the stream URL to player
+      //vsgLoadVideo(getUrlParameter('stream'));
+      
+
+}); // jQuery(function($) END
+
+
+function vsgLoadVideo(vidURL, poster) {
+
+  var type = getType(vidURL);
+
+  console.log(type);
+
+
+  vgsPlayer.src({
+    "src": vidURL,
+    "type": type
+  });
+
+  vgsPlayer.play();
+  
+  return false;
+
+}
+
+jQuery(function($) {
+
+
+  $("#event_search").submit(function(e) {
+    e.preventDefault();
+
+    var st = $("#starttime").val();
+    //st = st.replace(":","").replace("T","").replace("-","").replace("-","");
+    var et = $("#endtime").val();
+    //et = et.replace(":","").replace("T","").replace("-","").replace("-","");
+
+    var device = $("#deviceID").val();
+    var token = $("#Token").val();
+
+    //BLoadVideo("http://47.115.83.226:9966/vss/apiPage/ReplayVideo.html?token=695b21f48a7347d99c484c9934d7645f&deviceId=" + device + "&chs=1_2_3_4&st=" + st + "00&et=" + et + "00&wnum=4&panel=1&speed=4&buffer=3000");
+
+    $.ajax({
+          type: "POST",
+          contentType: "application/json",
+          url: "http://vss.howentech.com:9966/vss/record/evidenceToRetrieve.action",
+        data : JSON.stringify({
+                  "token":token, "deviceID":device, "startTime":st,
+                  "endTime":et,
+                  "alarmType":"",
+                  "scheme":"http"
+                  }), // data in json format
+        success: function(json) {
+            $("#table_tbody").empty();
+
+            for (var i=0; i<json.data.length; i++) {
+                var row$ = $('<tr/>');
+                       var cellValue = json[i].arguments[key].siValue.split('#');
+
+                       for(var j = 0; j < cellValue.length; j++) {
+
+                       row$.append($('<td/>').html(cellValue[j]));
+                       }
+
+               $("#excelDataTable").append(row$); 
+            }
+                              
+                                      
+        }        
+      });
+    
+  });
+
+});
+      
+
+function ytVidId(url) {
+
+  var p = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+
+  if (url.match(p) || getId(url).length == 11)
+    return false;
+}
+
+/**/
+function getId(url) {
+  var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+  var match = url.match(regExp);
+
+  if (match && match[2].length == 11) {
+    return match[2];
+  } else {
+    return false;
+  }
+}
+
+var rtmp_suffix = /^rtmp:\/\//;
+var hls_suffix = /\.m3u8/;
+var mp4_suffix = /\.(mp4|m4p|m4v|mov)/i;
+var hds_suffix = /\.f4m/;
+var dash_suffix = /\.mpd/;
+var flv_suffix = /\.flv/;
+var webm_suffix = /\.webm/;
+/* AUDIO */
+//var mp3_suffix = /\.mp3/;
+var mpeg_suffix = /\.(mp3|m4a)/i;
+var ogg_suffix = /\.ogg/;
+
+
+var yt_suffix = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+var dm_suffix = /\.?dailymotion.com/;
+var vm_suffix = /\.?vimeo.com/;
+
+function getType(url) {
+
+  /* AUDIO */
+  if (mpeg_suffix.test(url))
+    return 'audio/mpeg';
+  if (ogg_suffix.test(url))
+    return 'audio/ogg';
+  if (dash_suffix.test(url))
+    return 'application/dash+xml';
+  if (rtmp_suffix.test(url))
+    return 'rtmp/mp4';
+  if (hls_suffix.test(url))
+    return 'application/x-mpegurl';
+  if (mp4_suffix.test(url))
+    return 'video/mp4';
+  if (hds_suffix.test(url))
+    return 'application/adobe-f4m';
+  if (flv_suffix.test(url))
+    return 'video/flv';
+  if (webm_suffix.test(url))
+    return 'video/webm';
+  if (yt_suffix.test(url)) {
+
+    return 'video/youtube';
+  }
+  if (dm_suffix.test(url))
+    return 'video/dailymotion';
+  if (vm_suffix.test(url))
+    return 'video/vimeo';
+
+  console.log('could not guess link type: "' + url + '" assuming mp4');
+  return 'video/mp4';
+};
+
+function getExt(ext) {
+
+  if (ext == "mp4" || ext == "m4v") ext = "m4v";
+  if (ext == "ogg" || ext == "ogv") ext = "oga";
+  if (ext == "webm") ext = "webmv";
+
+  return ext;
+}
+
+
+
+
+
+  //]]>
+
+
+
+
+$("#custom_iframe_ShowCameraWindow_iframe").get(0).contentWindow.onbeforeunload = function(e) {
+    debugger;
+    console.log("onbeforeunload:e", "debug", e);
+};
+
+
+</script>
+
+
+</body>
+</html>
