@@ -4,6 +4,7 @@
   <title>Howen VSS Alarm Viewer</title>
   <style>
     table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px; }
+    video { width: 100%; max-width: 600px; margin-top: 20px; display: none; }
   </style>
 </head>
 <body>
@@ -22,6 +23,9 @@
     </thead>
     <tbody></tbody>
   </table>
+
+  <!-- Video player for in-page playback -->
+  <video id="videoPlayer" controls></video>
 
   <script>
     const apiBase = "https://vss.howentech.com/vss";
@@ -71,22 +75,42 @@
       const data = await res.json();
       const tbody = document.getElementById("alarmTable").querySelector("tbody");
       tbody.innerHTML = "";
+
       for (const alarm of data.data.dataList) {
         const row = document.createElement("tr");
+
+        // Alarm time
         const timeCell = document.createElement("td");
         timeCell.textContent = alarm.createtime;
+
+        // Play video
         const playCell = document.createElement("td");
-        const playLink = document.createElement("a");
-        playLink.href = `https://vss.howentech.com/vss/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1&fpath=${btoa(alarm.alarmGps)}`;
-        playLink.textContent = "Play";
-        playLink.target = "_blank";
-        playCell.appendChild(playLink);
+        const playBtn = document.createElement("button");
+        playBtn.textContent = "Play";
+        playBtn.onclick = () => {
+          const video = document.getElementById("videoPlayer");
+          // Use actual stream or downloadable video file path
+          const videoUrl = `${apiBase}/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1&fpath=${btoa(alarm.alarmGps)}`;
+          video.src = videoUrl;
+          video.style.display = "block";
+          video.load();
+          video.play();
+        };
+        playCell.appendChild(playBtn);
+
+        // Download video
         const downloadCell = document.createElement("td");
-        const downloadLink = document.createElement("a");
-        downloadLink.href = alarm.downUrl || "#";
-        downloadLink.textContent = "Download";
-        downloadLink.target = "_blank";
-        downloadCell.appendChild(downloadLink);
+        if (alarm.downUrl && alarm.downUrl.startsWith("http")) {
+          const downloadLink = document.createElement("a");
+          downloadLink.href = alarm.downUrl;
+          downloadLink.textContent = "Download";
+          downloadLink.download = "alarm_video.mp4";
+          downloadLink.target = "_blank";
+          downloadCell.appendChild(downloadLink);
+        } else {
+          downloadCell.textContent = "No download available";
+        }
+
         row.append(timeCell, playCell, downloadCell);
         tbody.appendChild(row);
       }
