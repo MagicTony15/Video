@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Howen VSS Alarm Viewer</title>
+  <style>
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px; }
+  </style>
+</head>
+<body>
+  <h2>Alarm Viewer</h2>
+
+  <label for="vehicleSelect">Select Vehicle:</label>
+  <select id="vehicleSelect" onchange="loadAlarms()"></select>
+
+  <table id="alarmTable">
+    <thead>
+      <tr>
+        <th>Alarm Time</th>
+        <th>Play Video</th>
+        <th>Download Video</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const apiBase = "https://vss.howentech.com/vss";
+    let token = "";
+
+    async function login() {
+      const res = await fetch(`${apiBase}/user/apiLogin.action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: "Gpsgatetest", password: "fcfa7fbed9656e1245f14219cf560ee9" })
+      });
+      const data = await res.json();
+      token = data.data.token;
+    }
+
+    async function loadVehicles() {
+      const res = await fetch(`${apiBase}/vehicle/findAll.action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, pageNum: 1, pageCount: 100 })
+      });
+      const data = await res.json();
+      const select = document.getElementById("vehicleSelect");
+      data.data.dataList.forEach(device => {
+        const option = document.createElement("option");
+        option.value = device.deviceno;
+        option.text = device.devicename;
+        select.appendChild(option);
+      });
+      loadAlarms();
+    }
+
+    async function loadAlarms() {
+      const deviceID = document.getElementById("vehicleSelect").value;
+      const res = await fetch(`${apiBase}/alarm/apiFindAllByTime.action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token,
+          deviceID,
+          pageNum: 1,
+          pageCount: 20,
+          beginTime: "2021-01-01 00:00:00",
+          endTime: "2025-12-31 23:59:59"
+        })
+      });
+      const data = await res.json();
+      const tbody = document.getElementById("alarmTable").querySelector("tbody");
+      tbody.innerHTML = "";
+      for (const alarm of data.data.dataList) {
+        const row = document.createElement("tr");
+        const timeCell = document.createElement("td");
+        timeCell.textContent = alarm.createtime;
+        const playCell = document.createElement("td");
+        const playLink = document.createElement("a");
+        playLink.href = `https://vss.howentech.com/vss/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1&fpath=${btoa(alarm.alarmGps)}`;
+        playLink.textContent = "Play";
+        playLink.target = "_blank";
+        playCell.appendChild(playLink);
+        const downloadCell = document.createElement("td");
+        const downloadLink = document.createElement("a");
+        downloadLink.href = alarm.downUrl || "#";
+        downloadLink.textContent = "Download";
+        downloadLink.target = "_blank";
+        downloadCell.appendChild(downloadLink);
+        row.append(timeCell, playCell, downloadCell);
+        tbody.appendChild(row);
+      }
+    }
+
+    (async () => {
+      await login();
+      await loadVehicles();
+    })();
+  </script>
+</body>
+</html>
