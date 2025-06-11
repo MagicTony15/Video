@@ -90,7 +90,7 @@
         playBtn.onclick = () => {
           const video = document.getElementById("videoPlayer");
           // Use actual stream or downloadable video file path
-          const videoUrl = `${apiBase}/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1&fpath=${btoa(alarm.alarmGps)}`;
+          const videoUrl = `${apiBase}/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&fpath=${btoa(alarm.alarmGps)}`;
           video.src = videoUrl;
           video.style.display = "block";
           video.load();
