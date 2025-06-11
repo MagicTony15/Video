@@ -55,7 +55,7 @@
     let token = "";
 
     async function login() {
-      const res = await fetch('${apiBase}/user/apiLogin.action', {
+      const res = await fetch(`${apiBase}/user/apiLogin.action`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -68,7 +68,7 @@
     }
 
     async function loadVehicles() {
-      const res = await fetch('${apiBase}/vehicle/findAll.action', {
+      const res = await fetch(`${apiBase}/vehicle/findAll.action`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, pageNum: 1, pageCount: 100 })
@@ -100,7 +100,7 @@
         return;
       }
 
-      const res = await fetch('${apiBase}/alarm/apiFindAllByTime.action', {
+      const res = await fetch(`${apiBase}/alarm/apiFindAllByTime.action`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -129,7 +129,7 @@
         replayBtn.onclick = () => {
           const iframe = document.getElementById("videoFrame");
           const encodedPath = btoa(alarm.alarmGps || "");
-          iframe.src = '${playbackBase}/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&fpath=${encodedPath}';
+          iframe.src = `${playbackBase}/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&fpath=${encodedPath}`;
           iframe.style.display = "block";
           iframe.scrollIntoView({ behavior: "smooth" });
         };
@@ -140,7 +140,7 @@
         realtimeBtn.textContent = "Live";
         realtimeBtn.onclick = () => {
           const iframe = document.getElementById("videoFrame");
-          iframe.src = '${playbackBase}/apiPage/RealVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&stream=0&wnum=4&panel=1&buffer=2000';
+          iframe.src = `${playbackBase}/apiPage/RealVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&stream=0&wnum=4&panel=1&buffer=2000`;
           iframe.style.display = "block";
           iframe.scrollIntoView({ behavior: "smooth" });
         };
@@ -151,4 +151,22 @@
           const downloadLink = document.createElement("a");
           downloadLink.href = alarm.downUrl;
           downloadLink.textContent = "Download";
-          down
+          downloadLink.download = "alarm_video.mp4";
+          downloadLink.target = "_blank";
+          downloadCell.appendChild(downloadLink);
+        } else {
+          downloadCell.textContent = "No download available";
+        }
+
+        row.append(timeCell, replayCell, realtimeCell, downloadCell);
+        tbody.appendChild(row);
+      }
+    }
+
+    (async () => {
+      await login();
+      await loadVehicles();
+    })();
+  </script>
+</body>
+</html>
