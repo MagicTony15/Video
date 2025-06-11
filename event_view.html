@@ -19,37 +19,41 @@
       margin-top: 20px;
       display: none;
     }
+    .top-bar {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
   <h2>Alarm Viewer</h2>
 
-  <label for="vehicleSelect">Select Vehicle:</label>
-  <select id="vehicleSelect"></select>
+  <div class="top-bar">
+    <label for="vehicleSelect">Select Vehicle:</label>
+    <select id="vehicleSelect"></select>
+    <button onclick="playLive()">Live View</button>
+  </div>
 
   <div class="filter-group">
     <label for="startTime">Start Time:</label>
     <input type="datetime-local" id="startTime">
     <label for="endTime">End Time:</label>
     <input type="datetime-local" id="endTime">
-    <button onclick="loadAlarms()">Filter</button>
+    <button onclick="loadEvidence()">Filter</button>
   </div>
 
+  <!-- ⬆️ Video iframe moved above the table -->
   <iframe id="videoFrame"></iframe>
 
   <table id="alarmTable">
     <thead>
       <tr>
+        <th>Alarm Type</th>
         <th>Alarm Time</th>
-        <th>Replay Video</th>
-        <th>Real-time Play</th>
         <th>Download Video</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
-
-  
 
   <script>
     const apiBase = "https://vss.howentech.com/vss";
@@ -84,15 +88,16 @@
         select.appendChild(option);
       });
 
+      // Set default time range: start of today to now
       const now = new Date();
       const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
       document.getElementById("startTime").value = todayStart.toISOString().slice(0, 16);
       document.getElementById("endTime").value = now.toISOString().slice(0, 16);
 
-      loadAlarms();
+      loadEvidence();
     }
 
-    async function loadAlarms() {
+    async function loadEvidence() {
       const deviceID = document.getElementById("vehicleSelect").value;
       const start = document.getElementById("startTime").value;
       const end = document.getElementById("endTime").value;
@@ -102,16 +107,18 @@
         return;
       }
 
-      const res = await fetch(`${apiBase}/alarm/apiFindAllByTime.action`, {
+      const res = await fetch(`${apiBase}/evidenceToRetrieve.action`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           token,
-          deviceID,
+          devIdno: deviceID,
+          chn: -1,
+          fileType: -1,
+          startTime: start.replace("T", " ") + ":00",
+          endTime: end.replace("T", " ") + ":59",
           pageNum: 1,
-          pageCount: 20,
-          beginTime: start.replace("T", " ") + ":00",
-          endTime: end.replace("T", " ") + ":59"
+          pageCount: 20
         })
       });
 
@@ -119,50 +126,38 @@
       const tbody = document.getElementById("alarmTable").querySelector("tbody");
       tbody.innerHTML = "";
 
-      for (const alarm of data.data.dataList) {
+      for (const item of data.data.dataList) {
         const row = document.createElement("tr");
 
+        const typeCell = document.createElement("td");
+        typeCell.textContent = item.alarmType || "N/A";
+
         const timeCell = document.createElement("td");
-        timeCell.textContent = alarm.createtime;
-
-        const replayCell = document.createElement("td");
-        const replayBtn = document.createElement("button");
-        replayBtn.textContent = "Replay";
-        replayBtn.onclick = () => {
-          const iframe = document.getElementById("videoFrame");
-          const encodedPath = btoa(alarm.alarmGps || "");
-          iframe.src = `${playbackBase}/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&fpath=${encodedPath}`;
-          iframe.style.display = "block";
-          iframe.scrollIntoView({ behavior: "smooth" });
-        };
-        replayCell.appendChild(replayBtn);
-
-        const realtimeCell = document.createElement("td");
-        const realtimeBtn = document.createElement("button");
-        realtimeBtn.textContent = "Live";
-        realtimeBtn.onclick = () => {
-          const iframe = document.getElementById("videoFrame");
-          iframe.src = `${playbackBase}/apiPage/RealVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&stream=0&wnum=4&panel=1&buffer=2000`;
-          iframe.style.display = "block";
-          iframe.scrollIntoView({ behavior: "smooth" });
-        };
-        realtimeCell.appendChild(realtimeBtn);
+        timeCell.textContent = item.startTime;
 
         const downloadCell = document.createElement("td");
-        if (alarm.downUrl && alarm.downUrl.startsWith("http")) {
+        if (item.downUrl && item.downUrl.startsWith("http")) {
           const downloadLink = document.createElement("a");
-          downloadLink.href = alarm.downUrl;
+          downloadLink.href = item.downUrl;
           downloadLink.textContent = "Download";
-          downloadLink.download = "alarm_video.mp4";
+          downloadLink.download = "evidence_video.mp4";
           downloadLink.target = "_blank";
           downloadCell.appendChild(downloadLink);
         } else {
           downloadCell.textContent = "No download available";
         }
 
-        row.append(timeCell, replayCell, realtimeCell, downloadCell);
+        row.append(typeCell, timeCell, downloadCell);
         tbody.appendChild(row);
       }
+    }
+
+    function playLive() {
+      const deviceID = document.getElementById("vehicleSelect").value;
+      const iframe = document.getElementById("videoFrame");
+      iframe.src = `${playbackBase}/apiPage/RealVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&stream=0&wnum=4&panel=1&buffer=2000`;
+      iframe.style.display = "block";
+      iframe.scrollIntoView({ behavior: "smooth" });
     }
 
     (async () => {
