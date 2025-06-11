@@ -127,7 +127,7 @@
         playBtn.onclick = () => {
           const iframe = document.getElementById("videoFrame");
           const encodedPath = btoa(alarm.alarmGps || "");
-          iframe.src = `${apiBase}/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&fpath=${encodedPath}`;
+          iframe.src = `${apiBase}/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&stream=0&wnum=4&panel=1&buffer=2000&fpath=${encodedPath}`;
           iframe.style.display = "block";
           iframe.scrollIntoView({ behavior: "smooth" });
         };
