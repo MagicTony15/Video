@@ -39,7 +39,8 @@
     <thead>
       <tr>
         <th>Alarm Time</th>
-        <th>Play Video</th>
+        <th>Replay Video</th>
+        <th>Real-time Play</th>
         <th>Download Video</th>
       </tr>
     </thead>
@@ -50,10 +51,11 @@
 
   <script>
     const apiBase = "https://vss.howentech.com/vss";
+    const playbackBase = "https://vss.howentech.com:36301/vss";
     let token = "";
 
     async function login() {
-      const res = await fetch(`${apiBase}/user/apiLogin.action`, {
+      const res = await fetch('${apiBase}/user/apiLogin.action', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -66,7 +68,7 @@
     }
 
     async function loadVehicles() {
-      const res = await fetch(`${apiBase}/vehicle/findAll.action`, {
+      const res = await fetch('${apiBase}/vehicle/findAll.action', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, pageNum: 1, pageCount: 100 })
@@ -98,7 +100,7 @@
         return;
       }
 
-      const res = await fetch(`${apiBase}/alarm/apiFindAllByTime.action`, {
+      const res = await fetch('${apiBase}/alarm/apiFindAllByTime.action', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -121,39 +123,32 @@
         const timeCell = document.createElement("td");
         timeCell.textContent = alarm.createtime;
 
-        const playCell = document.createElement("td");
-        const playBtn = document.createElement("button");
-        playBtn.textContent = "Play";
-        playBtn.onclick = () => {
+        const replayCell = document.createElement("td");
+        const replayBtn = document.createElement("button");
+        replayBtn.textContent = "Replay";
+        replayBtn.onclick = () => {
           const iframe = document.getElementById("videoFrame");
           const encodedPath = btoa(alarm.alarmGps || "");
-          iframe.src = `${apiBase}/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&stream=0&wnum=4&panel=1&buffer=2000&fpath=${encodedPath}`;
+          iframe.src = '${playbackBase}/apiPage/ReplayAlarmServerVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&fpath=${encodedPath}';
           iframe.style.display = "block";
           iframe.scrollIntoView({ behavior: "smooth" });
         };
-        playCell.appendChild(playBtn);
+        replayCell.appendChild(replayBtn);
+
+        const realtimeCell = document.createElement("td");
+        const realtimeBtn = document.createElement("button");
+        realtimeBtn.textContent = "Live";
+        realtimeBtn.onclick = () => {
+          const iframe = document.getElementById("videoFrame");
+          iframe.src = '${playbackBase}/apiPage/RealVideo.html?token=${token}&deviceId=${deviceID}&chs=1_2_3_4&stream=0&wnum=4&panel=1&buffer=2000';
+          iframe.style.display = "block";
+          iframe.scrollIntoView({ behavior: "smooth" });
+        };
+        realtimeCell.appendChild(realtimeBtn);
 
         const downloadCell = document.createElement("td");
         if (alarm.downUrl && alarm.downUrl.startsWith("http")) {
           const downloadLink = document.createElement("a");
           downloadLink.href = alarm.downUrl;
           downloadLink.textContent = "Download";
-          downloadLink.download = "alarm_video.mp4";
-          downloadLink.target = "_blank";
-          downloadCell.appendChild(downloadLink);
-        } else {
-          downloadCell.textContent = "No download available";
-        }
-
-        row.append(timeCell, playCell, downloadCell);
-        tbody.appendChild(row);
-      }
-    }
-
-    (async () => {
-      await login();
-      await loadVehicles();
-    })();
-  </script>
-</body>
-</html>
+          down
